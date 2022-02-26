@@ -7,7 +7,7 @@ Os objetivos específicos desse projeto são:
 
 1)  Criar novas tabelas, novos relacionamentos e registros fictícios de forma à simular o funcionamento de um banco para armazenagem de dados referente à chegadas de turistas internacionais ao Brasil.
 2)  Criar subrotinas de importação de dados para popular o PostgreSQL
-3)  Realizar uma análise de dados utilizando a linguagem R a partir de dados armazenados em PostgreSQL.
+3)  Realizar uma análise de dados utilizando a linguagem R a partir de dados armazenados no PostgreSQL.
 
 
 # Tecnologias utilizadas
