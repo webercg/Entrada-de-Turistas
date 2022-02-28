@@ -5,15 +5,17 @@
 
 Os objetivos específicos desse projeto são:
 
-1)  Criar novas tabelas, novos relacionamentos e registros fictícios de forma à simular o funcionamento de um banco para armazenagem de dados referente à chegadas de turistas internacionais ao Brasil.
-2)  Criar subrotinas de importação de dados para popular o PostgreSQL
-3)  Realizar uma análise de dados utilizando a linguagem R a partir de dados armazenados no PostgreSQL.
+1) Criação de indexes para otimizar consultas ao banco de dados
+2) Criação de 3 usuários com diferentes ivilégios ao banco de dados
+3) Simulação no banco de dados para agendamento de viagens (TRANSACTIONS)
+4) Criação de triggers para recalcular registros automáticamente;
+5) Estabelecer interface Python - PostgreSQL
+6) Análise de dados com Python
 
 
 # Tecnologias utilizadas
 - Python
 - PostgreSQL
-- R
 
 # Dataset
 Foram utilizados os dados fornecidos pelo ministério do turismo que indicam a chegada dos turistas no brasil entre os anos de 1998 a 2017. Apenas os dados referentes aos anos de 2010 à 2015 foram considerados.
@@ -24,86 +26,65 @@ Disponível em: http://dados.gov.br/dataset/chegada-turistas
 # Banco de dados
 
 A fim de simular o funcionamento de um banco de dados para gerenciamento de entrada de turistas no país, o seguinte banco de dados foi proposto para armazenar as informações do dataset. 
-O banco pode ser recriado executando o script cria_banco.sql desse repositório.
-
-## Diagrama Entidade-Relacionamento
-![DER](https://github.com/webercg/assets/blob/main/1.png)
-
-## Modelo Relacional
-![MR](https://github.com/webercg/assets/blob/main/2.png)
-
-## Descrição do banco de dados
-### Para a tabela País foram criados os seguintes atributos:
-
-● <b>cod_pais_origem:</b> Novo código sequencial gerado para a ocorrência de todos os países registrados como país origem do turista no dataset de origem.
-
-● <b>nome_pais_origem:</b> Nome dos paises existentes no dataset de origem. 
-
-● <b>continente:</b> Nome do continente associado ao país.
-
-● <b>idh:</b> Indicador de índice de desenvolvimento humano, uma nova característica implementada pelo grupo, o valor atribuído aos países foi fictício.
+O banco pode ser recriado realizando o backup do arquivo "Backup BD" desse repositório
 
 
-### Para a tabela estado_brasileiro foram criados os seguintes atributos:
+## Criação de indexes
 
-● <b>cod_uf:</b> Novo código sequencial gerado para a ocorrência de todos os estados registrados como destino no dataset original.
+Antes de iniciar a criação de indexes é importante atualizar as métricas das tabelas do banco de dados com o comando analyze
 
-● <b>nome_estado:</b> Nome dos estados brasileiros existentes no dataset original.
+--- analyzes
+analyze turista
+analyze viagem
+analyze pais
+analyze estado_brasileiro
 
-● <b>regiao:</b> Corresponde a região do país a qual aquele estado pertence, sendo essa informação real.
+Criação de um índex bitmap para a via de preferência de viagem dos turistas (Terrestre, Fluvial, Marítima ou Aérea)
 
-
-### Para a tabela turista foram criados os seguintes atributos:
-
-● <b>num_passaporte:</b> Tem por objetivo simular o número do passaporte do turista, um identificador único para cada registro, sendo esse valor gerado aleatoriamente.
-
-● <b>nome:</b> Corresponde ao nome completo do turista, sendo esse valor fictício.
-
-● <b>estado_civil:</b> Corresponde ao estado cívil do turista, podendo ser “S” para solteiro, “C” para casado, “D/S” para divorciado e “V” para viúvo.
-
-● <b>sexo:</b> Corresponde ao sexo do turista, podendo ser “M” para masculino e “F” para feminino.
-
-● <b>data_nascimento:</b> Corresponde a data de nascimento do turista.
-
-● <b>cod_pais_origem:</b> É uma chave estrangeira que se liga com a tabela de país, esse atributo tem por objetivo indicar a nacionalidade do turista.
+-- Index 1 Bitmap -- Via
+create index idxviaBitmap on viagem using gin (via);
+explain analyze
+select * from viagem where via = 'Fluvial'
 
 
-### Para a tabela viagem foram criados os seguintes atributos:
+Criação de um index de Texto para otimizar as consultas baseando-se no seus nomes cadastrados.
 
-● <b>id_viagem:</b> Corresponde ao identificador único da viagem, sendo esse auto incrementado a cara registro incluso.
-
-● <b>data_chegada:</b> Corresponde a data em que o turista chegou ao brasil.
-
-● <b>pais_origem:</b> Corresponde ao país da partida da viagem do turista, não tendo relação com sua nacionalidade.
-
-● <b>continente_origem:</b> Corresponde ao continente a qual o país de partida da viagem pertence.
-
-● <b>num_passaporte:</b> Corresponde ao número do passaporte do turista.
-
-● <b>cod_uf:</b> Corresponde ao estado brasileiro destino da viagem do turista.
-
-● <b>via:</b> Corresponde ao tipo do transporte da viagem, podendo ser de via aérea, fluvial, marítima ou terrestre
+-- Index 2 Texto -- Nome Turista
+create index idxnomeTrgm on turista using GIN(nome gin_trgm_ops);
+explain analyze;
+select * from turista where nome like 'Coral%'
 
 
-# Importação e manipulação de dados com Python e SQL
+Criação de um índex bitmap para otimizar as consultas pelas buscas de turistas provindos de diversos continentes.
 
-Foi desenvolvido uma aplicação em Python para ler os dados do arquivo csv e popular uma tabela auxiliar no banco de dados.
-Código disponível no notebook "Import csv.ipynb" do repositório.
+-- Index 3 -- Bitmap - Continente
+create index idxcontinBitmap on viagem using gin (continente_origem);
+explain analyze;
+select * from viagem where continente_origem = 'Europa';
 
-A quantidade de chegadas de turistas na tabela auxiliar foi lida de forma gerar registros individuais de viagens. Dados fictícios como, por exemplo, nome do turista, sobrenome, passaporte foram gerados a fim de complementar as informações do dataset.
-Para cada tabela foi utilizado uma estratégia específica para popular com dados. Para a tabela PAIS e ESTADO_BRASILEIRO foi realizado um comando de inserção usando como base a tabela de referência, agrupando todas as ocorrências de país origem de UF destino de modo que fossem populado os registros sem duplicação. 
-Código disponível no arquivo "Popular PAIS e ESTADO BRASILEIRO.sql" do repositório.
 
-Para popular os registros na tabela TURISTAS foi criado uma aplicação em python para acessar dois arquivos de texto encontrados na web, nome.txt e sobrenome.txt com a finalidade de formar um nome fictício de turistas, demais atributos foram inseridos de forma randômica para gerar uma variação de dados. 1001 registros foram criados para serem utilizados nas viagens. 
-O código pode ser consultado no notebook "Popular Turistas.ipynb" do repositório. 
+Criação de um índex de chave estrangeira para otimizar as consultas por uma busca comum como por exemplo os principais continentes de origem do turista em um estado de destino específico.
 
-Para popular a tabela VIAGEM foi necessário transformar os registros que possuem quantidades absolutas de chegadas na tabela de referência em registros individuais de viagens e de turistas, para que conseguíssemos acessar as características individuais das pessoas para gerar novas análises. 
-Para isso foi criado uma aplicação para varrer a tabela de referência e a cada registro em que a quantidade de chegada fosse maior que 0, criar uma viagem individual para cada chegada, atribuindo um turista da tabela de turistas aleatoriamente.
-O código pode ser consultado no notebook "Popular Viagens.ipynb" do repositório.
+-- Index 4 Foreign Key -- CodUF (Estado - Viagem)
+create index idxestadoviagem on viagem(cod_uf);
+EXPLAIN ANALYZE;
+SELECT continente_origem , nome_estado
+FROM estado_brasileiro NATURAL JOIN viagem
+WHERE viagem.cod_uf=6
 
-![Banco](https://github.com/webercg/assets/blob/main/3.png)
+Criação de um índex bitmap para otimizar as consultas pelas buscas de turistas baseado em seu gênero (Masculino ou Feminino)
 
-# Análise de dados com R.
+-- index 5 Bitmap -- Genero
+create index idxgeneroBitmap on turista using gin (sexo);
+explain analyze;
+select * from turista where sexo = 'F'
+
+## Criação de usuarios e privilégios no banco de dados
+
+## Simulação agendamento de viagens (TRANSACTIONS)
+
+
+# Análise de dados com Python
 
 A partir dos dados já inseridos no banco uma aplicação em R foi criada para conectar-se ao banco de dados e gerar insights. 
 O código elaborado em R está disponível para consulta no arquivo “Consultas.R” do repositório. 
