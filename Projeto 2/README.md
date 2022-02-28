@@ -35,50 +35,50 @@ O banco pode ser recriado realizando o backup do arquivo "Backup BD" desse repos
 Antes de iniciar a criação de indexes é importante atualizar as métricas das tabelas do banco de dados com o comando analyze
 
 --- analyzes
-analyze turista
-analyze viagem
-analyze pais
-analyze estado_brasileiro
+<i>analyze turista;
+analyze viagem;
+analyze pais;
+analyze estado_brasileiro</i>
 
 Criação de um índex bitmap para a via de preferência de viagem dos turistas (Terrestre, Fluvial, Marítima ou Aérea)
 
 -- Index 1 Bitmap -- Via
-create index idxviaBitmap on viagem using gin (via);
-explain analyze
-select * from viagem where via = 'Fluvial'
+<i>create index idxviaBitmap on viagem using gin (via);
+explain analyze;
+select * from viagem where via = 'Fluvial'</i>
 
 
 Criação de um index de Texto para otimizar as consultas baseando-se no seus nomes cadastrados.
 
 -- Index 2 Texto -- Nome Turista
-create index idxnomeTrgm on turista using GIN(nome gin_trgm_ops);
+<i>create index idxnomeTrgm on turista using GIN(nome gin_trgm_ops);
 explain analyze;
-select * from turista where nome like 'Coral%'
+select * from turista where nome like 'Coral%'</i>
 
 
 Criação de um índex bitmap para otimizar as consultas pelas buscas de turistas provindos de diversos continentes.
 
 -- Index 3 -- Bitmap - Continente
-create index idxcontinBitmap on viagem using gin (continente_origem);
+<i>create index idxcontinBitmap on viagem using gin (continente_origem);
 explain analyze;
-select * from viagem where continente_origem = 'Europa';
+select * from viagem where continente_origem = 'Europa';</i>
 
 
 Criação de um índex de chave estrangeira para otimizar as consultas por uma busca comum como por exemplo os principais continentes de origem do turista em um estado de destino específico.
 
 -- Index 4 Foreign Key -- CodUF (Estado - Viagem)
-create index idxestadoviagem on viagem(cod_uf);
+<i>create index idxestadoviagem on viagem(cod_uf);
 EXPLAIN ANALYZE;
 SELECT continente_origem , nome_estado
 FROM estado_brasileiro NATURAL JOIN viagem
-WHERE viagem.cod_uf=6
+WHERE viagem.cod_uf=6 </i>
 
 Criação de um índex bitmap para otimizar as consultas pelas buscas de turistas baseado em seu gênero (Masculino ou Feminino)
 
 -- index 5 Bitmap -- Genero
-create index idxgeneroBitmap on turista using gin (sexo);
+<i>create index idxgeneroBitmap on turista using gin (sexo);
 explain analyze;
-select * from turista where sexo = 'F'
+select * from turista where sexo = 'F'</i>
 
 ## Criação de usuarios e privilégios no banco de dados
 
@@ -111,15 +111,15 @@ GROUP gerente;
 ## Definição de funções e acionamento de triggers.
 O trigger viagem_trigger foi criado no banco de dados com o objetivo de acionar a função verifica_covid sempre que a tabela de viagens receber um novo registro ou uma atualização.
 
-CREATE TRIGGER viagem_trigger
+<i>CREATE TRIGGER viagem_trigger
  AFTER INSERT OR UPDATE
  ON viagem FOR EACH ROW
  WHEN (pg_trigger_depth() = 0)
- EXECUTE PROCEDURE verifica_covid();
+ EXECUTE PROCEDURE verifica_covid();</i>
  
 Para contextualizar é necessário o entendimento da função verifica_covid. O objetivo dessa função é verificar a temperatura coletada do turista e atualizar o atributo libera_viagem da tabela viagem. Caso a temperatura seja superior a 37.5 graus, o turista é proibido de viajar, caso não, é liberado.
 
-CREATE OR REPLACE FUNCTION verifica_covid() RETURNS Trigger AS
+<i>CREATE OR REPLACE FUNCTION verifica_covid() RETURNS Trigger AS
 $BODY$
 BEGIN
  if (new.temperatura > 37.5) then
@@ -131,7 +131,7 @@ BEGIN
  END IF;
 END;
 $BODY$
-LANGUAGE plpgsql; 
+LANGUAGE plpgsql; </i>
 
 ## Simulação de agendamentos de viagens e seleção de grau de isolamento
 
@@ -145,20 +145,20 @@ em outros que permitem esse grau de isolamento
 
 Atendente 1:
 
-begin;
+<i>begin;
 set transaction isolation level read uncommitted;
 select * from turista where num_passaporte = '799698778782977';
 insert into turista values (799698778782977,'José Bezerra','S','M','1958-09-
 20', 40);
 select * from turista where num_passaporte = '799698778782977';
-commit;:
+commit;:</i>
 
 Atendente 2:
 
-begin;
+<i>begin;
 set transaction isolation level read uncommitted;
 select * from turista where num_passaporte = '799698778782977';
-commit; 
+commit; </i>
 
 Vantagem sobre a decisão pelo grau de isolamento read uncommitted: Para gerar a informação para o Atendente 2 que o processo de agendamento já está em andamento pelo Atendente 1.
 
