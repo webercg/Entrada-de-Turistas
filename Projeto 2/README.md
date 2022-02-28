@@ -144,6 +144,7 @@ Por padrão o postgres trata todo read uncommited como read commited, portanto, 
 em outros que permitem esse grau de isolamento 
 
 Atendente 1:
+
 begin;
 set transaction isolation level read uncommitted;
 select * from turista where num_passaporte = '799698778782977';
@@ -153,6 +154,7 @@ select * from turista where num_passaporte = '799698778782977';
 commit;:
 
 Atendente 2:
+
 begin;
 set transaction isolation level read uncommitted;
 select * from turista where num_passaporte = '799698778782977';
@@ -166,29 +168,50 @@ A partir dos dados já inseridos no banco uma aplicação em R foi criada para c
 O código elaborado em R está disponível para consulta no arquivo “Consultas.R” do repositório. 
 Os quatro gráficos a seguir foram gerados.
 
-<b>Consulta 1:</b> Distribuição das vias de entrada no país pelos turistas entre os anos de 2010 e 2015.
+<b>Consulta 1:</b> Entrada de turistas no ano de 2015 vs IDH do país de origem 
 
 ![Consulta1](https://github.com/webercg/assets/blob/main/4.png)
 
-Como os dados de vias foi gerado aleatoriamente, todas apresentam uma distribuição semelhante, cerca de 25% cada.
+Em virtude da geração de IDH’s aleatórios para popular a tabela países , não se pode ter uma conclusão realista, o que era de se esperar seria uma correlação positiva entre o IDH e a quantidade de turistas uma vez que países com maiores IDH são também mais desenvolvidos economicamente. 
 
-<b>Consulta 2:</b> Gráfico que represente a entrada de turistas solteiras do sexo feminino provindas do Japão e turistas solteiros do sexo masculino provindos da Rússia por ano.
+<b>Consulta 2:</b> Média Móvel 30 dias de check-in diário de turistas em São Paulo, Rio de Janeiro e Bahia entre 2010 e 2015 
 
 ![Consulta2](https://github.com/webercg/assets/blob/main/5.png)
 
-Como o sexo dos turistas foram gerados aleatoriamente a mesma quantidade de pessoas do sexo masculino é esperada nos gráficos representados acima. Dessa forma, é possível inferir que o Japão possui maior entrada de turistas no país entre os anos de 2010 á 2015 em comparação com a Rússia. Isso pode ser explicado pelo fato do Brasil possuir um forte vínculo com os nipônicos, atualmente, o Brasil possui a maior comunidade japonesa fora do Japão.
+A idéia é identificar tendências na quantidade de entrada de turistas diariamente nos principais pólos turísticos do Pais. Observamos que, São Paulo lidera na recepção de turistas, seguido por Rio de Janeiro e Bahia. Uma observação interessante é que durante o ano da copa de 2014 houve um aumento significativo do numero de turistas nos dois primeiros estados, já no estado da Bahia não se observou essa tendência revelando, portanto, a preferência pelo pólo econômico e o eixo Rio-São Paulo.
 
-<b>Consulta 3:</b> Entrada de turistas provindos do continente Europeu por país entre os anos de 2010 e 2015.
+Sumarização consulta 2:
+
+![Consulta2](https://github.com/webercg/assets/blob/main/5.png)
+
+De acordo com os dados sumarizados, constata-se que a média diária de entrada de turistas provindos de São Paulo é quase duas vezes maior que a média do Rio de Janeiro, embora o desvio padrão seja 34% maior também. Apesar de não aparecer no gráfico 2, a quantidade máxima de check-ins de turistas nos Estados de São Paulo e Rio de Janeiro idênticas e
+equivalem a 13 turistas em um único dia, isso por que o gráfico 2 condensa a média ponderada de 5 dias e não o valor absoluto em um dia. 
+
+<b>Consulta 3:</b> Entrada de turistas provindos da Europa e América do Sul nas altas temporadas 
 
 ![Consulta3](https://github.com/webercg/assets/blob/main/6.png)
 
-É possível notar que as maiores entradas de estrangeiros correspondem a turistas provindos das nações detentoras das maiores economias como Alemanha, França, Itália e Reino Unido. 
+Durante as férias escolares e o carnaval nota-se um aumento na recepção de turistas ao Brasil. Observou-se que o país recebe um numero maior de turistas provindos da América do Sul em comparação com a Europa, o que pode explicar esse comportamento é a proximidade do Brasil com os países da America do Sul. Outro comportamento interessante é
+que observou-se um aumento da entrada de turistas provindos da America do Sul nos primeiros meses do ano em detrimento da queda do número de turistas provindos da Europa para o mesmo período. . 
 
-<b>Consulta 4:</b>  Série temporal de entrada de turistas estrangeiros ao nordeste do Brasil por ano entre 2010 e 2015.
+<b>Consulta 4:</b> Entrada de turistas por continente de origem um ano antes da copa de 2014 (2013) 
 
-![Consulta3](https://github.com/webercg/assets/blob/main/7.png)
+![Consulta4](https://github.com/webercg/assets/blob/main/7.png)
 
-É possível notar uma tendência de diminuição de visita de turistas internacionais ao nordeste brasileiro entre 2011 e 2013. A tendência se inverteu entre o período de 2013 a 2015, provavelmente por conta da organização da copa do mundo realizada em 2014.
+A maior quantidade de turistas no ano de 2013 foram provindos da América do Sul, Europa e América do Norte. Destaque para os visitantes da América do Sul onde os números são quase 3 vezes maior que o número de visitantes da Europa. 
+
+<b>Consulta 5:</b> Entrada de turistas por continente de origem no ano da copa de 2014 
+
+![Consulta5](https://github.com/webercg/assets/blob/main/7.png)
+
+Comparando-se o gráfico anterior com esse é possível identificar um aumento do número de turistas de cerca de 1670 da América do Sul e 594 da Europa para 1776 da América do Sul e 710 da Europa. Em termos relativos durante o ano da copa houve um aumento de 6,35% do número de turistas da América do Sul e 19,53% de turistas da Europa.
+
+<b>Consulta 6:</b> Entrada de turistas argentinos por região de destino 
+
+![Consulta6](https://github.com/webercg/assets/blob/main/7.png)
+
+Observa-se pelo gráfico a preferência dos turistas argentinos pelo Sul e Sudeste do país. Uma explicação para esse comportamento seria a proximidade da Argentina com essas
+duas regiões, outro fator que deve ser levado em consideração é que são as duas regiões mais desenvolvidas do país mais fortes no turismo corporativo. 
 
 # Autores
 
