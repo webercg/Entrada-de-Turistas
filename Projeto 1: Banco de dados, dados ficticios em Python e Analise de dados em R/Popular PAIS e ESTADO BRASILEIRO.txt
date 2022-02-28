@@ -1,0 +1,6 @@
+insert into pais (cod_pais_origem , nome_pais_origem , continente, idh)
+
+select distinct row_number() over (), pais, continente, 1 from turistas t group by continente,pais;
+
+insert into estado_brasileiro (nome_estado , cod_uf , regiao ) select uf, ordemuf, 'região' from turistas t group by uf, ordemuf; 
+
