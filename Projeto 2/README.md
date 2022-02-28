@@ -170,45 +170,45 @@ Os quatro gráficos a seguir foram gerados.
 
 <b>Consulta 1:</b> Entrada de turistas no ano de 2015 vs IDH do país de origem 
 
-![Consulta1](https://github.com/webercg/assets/blob/main/4.png)
+![Consulta1](https://github.com/webercg/assets/blob/main/8.jpg)
 
 Em virtude da geração de IDH’s aleatórios para popular a tabela países , não se pode ter uma conclusão realista, o que era de se esperar seria uma correlação positiva entre o IDH e a quantidade de turistas uma vez que países com maiores IDH são também mais desenvolvidos economicamente. 
 
 <b>Consulta 2:</b> Média Móvel 30 dias de check-in diário de turistas em São Paulo, Rio de Janeiro e Bahia entre 2010 e 2015 
 
-![Consulta2](https://github.com/webercg/assets/blob/main/5.png)
+![Consulta2](https://github.com/webercg/assets/blob/main/9.jpg)
 
 A idéia é identificar tendências na quantidade de entrada de turistas diariamente nos principais pólos turísticos do Pais. Observamos que, São Paulo lidera na recepção de turistas, seguido por Rio de Janeiro e Bahia. Uma observação interessante é que durante o ano da copa de 2014 houve um aumento significativo do numero de turistas nos dois primeiros estados, já no estado da Bahia não se observou essa tendência revelando, portanto, a preferência pelo pólo econômico e o eixo Rio-São Paulo.
 
 Sumarização consulta 2:
 
-![Consulta2](https://github.com/webercg/assets/blob/main/5.png)
+![Consulta2s](https://github.com/webercg/assets/blob/main/10.jpg)
 
 De acordo com os dados sumarizados, constata-se que a média diária de entrada de turistas provindos de São Paulo é quase duas vezes maior que a média do Rio de Janeiro, embora o desvio padrão seja 34% maior também. Apesar de não aparecer no gráfico 2, a quantidade máxima de check-ins de turistas nos Estados de São Paulo e Rio de Janeiro idênticas e
 equivalem a 13 turistas em um único dia, isso por que o gráfico 2 condensa a média ponderada de 5 dias e não o valor absoluto em um dia. 
 
 <b>Consulta 3:</b> Entrada de turistas provindos da Europa e América do Sul nas altas temporadas 
 
-![Consulta3](https://github.com/webercg/assets/blob/main/6.png)
+![Consulta3](https://github.com/webercg/assets/blob/main/11.jpg)
 
 Durante as férias escolares e o carnaval nota-se um aumento na recepção de turistas ao Brasil. Observou-se que o país recebe um numero maior de turistas provindos da América do Sul em comparação com a Europa, o que pode explicar esse comportamento é a proximidade do Brasil com os países da America do Sul. Outro comportamento interessante é
 que observou-se um aumento da entrada de turistas provindos da America do Sul nos primeiros meses do ano em detrimento da queda do número de turistas provindos da Europa para o mesmo período. . 
 
 <b>Consulta 4:</b> Entrada de turistas por continente de origem um ano antes da copa de 2014 (2013) 
 
-![Consulta4](https://github.com/webercg/assets/blob/main/7.png)
+![Consulta4](https://github.com/webercg/assets/blob/main/12.jpg)
 
 A maior quantidade de turistas no ano de 2013 foram provindos da América do Sul, Europa e América do Norte. Destaque para os visitantes da América do Sul onde os números são quase 3 vezes maior que o número de visitantes da Europa. 
 
 <b>Consulta 5:</b> Entrada de turistas por continente de origem no ano da copa de 2014 
 
-![Consulta5](https://github.com/webercg/assets/blob/main/7.png)
+![Consulta5](https://github.com/webercg/assets/blob/main/13.jpg)
 
 Comparando-se o gráfico anterior com esse é possível identificar um aumento do número de turistas de cerca de 1670 da América do Sul e 594 da Europa para 1776 da América do Sul e 710 da Europa. Em termos relativos durante o ano da copa houve um aumento de 6,35% do número de turistas da América do Sul e 19,53% de turistas da Europa.
 
 <b>Consulta 6:</b> Entrada de turistas argentinos por região de destino 
 
-![Consulta6](https://github.com/webercg/assets/blob/main/7.png)
+![Consulta6](https://github.com/webercg/assets/blob/main/14.jpg)
 
 Observa-se pelo gráfico a preferência dos turistas argentinos pelo Sul e Sudeste do país. Uma explicação para esse comportamento seria a proximidade da Argentina com essas
 duas regiões, outro fator que deve ser levado em consideração é que são as duas regiões mais desenvolvidas do país mais fortes no turismo corporativo. 
