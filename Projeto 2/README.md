@@ -7,7 +7,7 @@ Os objetivos específicos desse projeto são:
 
 1) Criação de indexes para otimizar consultas ao banco de dados
 2) Criação de 3 usuários com diferentes ivilégios ao banco de dados
-3) Simulação no banco de dados para agendamento de viagens (TRANSACTIONS)
+3) Simulação no banco de dados para agendamento de viagens (TRANSACTIONS) e seleção de grau de isolamento
 4) Criação de funções no banco de dados
 5) Criação de triggers para recalcular registros automáticamente;
 6) Estabelecer interface Python - PostgreSQL
@@ -108,7 +108,7 @@ GROUP operador;
 - CREATE USER gerente1 ENCRYPTED PASSWORD 'ger123' CREATEDB IN
 GROUP gerente; 
 
-## Simulação agendamento de viagens (TRANSACTIONS)
+## Definição de funções e acionamento de triggers.
 O trigger viagem_trigger foi criado no banco de dados com o objetivo de acionar a função verifica_covid sempre que a tabela de viagens receber um novo registro ou uma atualização.
 
 CREATE TRIGGER viagem_trigger
@@ -132,6 +132,33 @@ BEGIN
 END;
 $BODY$
 LANGUAGE plpgsql; 
+
+## Simulação de agendamentos de viagens e seleção de grau de isolamento
+
+### Descrição do cenário hipotético das transações:
+
+Um cliente vai até uma agência para se cadastrar e agendar uma viagem, o sistema da agência fica indisponível de forma que o atendente 1 decide anotar as informações para cadastrá-lo posteriormente e retornar para marcar a viagem por telefone. Um dia depois o mesmo cliente volta a agência para verificar se já está cadastrado uma vez que não recebeu ligação nenhuma, mas é atendido por outro atendente 2 pois de acordo com a escala da agência o atendente 1 esta de Home Office.
+
+O atendente 2 irá se basear na informação retornada pela consulta dele para decidir se irá ou não cadastrar o cliente no banco de dados. O grau de isolamento utilizado será read uncommited e a consulta deveria retornar que o cliente já está cadastrado ou em processo de ser cadastrado pelo atendente 1 o que iria economizar, portanto, o tempo do atendente 2 e do cliente evitando que ele fornecesse todos seus dados pessoais novamente e o atendente 2 digitasse essas informações no sistema para tentar cadastrá-lo.
+Por padrão o postgres trata todo read uncommited como read commited, portanto, essa situação não é aplicável a esse banco de dados em específico mas pode ser reproduzido
+em outros que permitem esse grau de isolamento 
+
+Atendente 1:
+begin;
+set transaction isolation level read uncommitted;
+select * from turista where num_passaporte = '799698778782977';
+insert into turista values (799698778782977,'José Bezerra','S','M','1958-09-
+20', 40);
+select * from turista where num_passaporte = '799698778782977';
+commit;:
+
+Atendente 2:
+begin;
+set transaction isolation level read uncommitted;
+select * from turista where num_passaporte = '799698778782977';
+commit; 
+
+Vantagem sobre a decisão pelo grau de isolamento read uncommitted: Para gerar a informação para o Atendente 2 que o processo de agendamento já está em andamento pelo Atendente 1.
 
 # Análise de dados com Python
 
