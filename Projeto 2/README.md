@@ -8,9 +8,10 @@ Os objetivos específicos desse projeto são:
 1) Criação de indexes para otimizar consultas ao banco de dados
 2) Criação de 3 usuários com diferentes ivilégios ao banco de dados
 3) Simulação no banco de dados para agendamento de viagens (TRANSACTIONS)
-4) Criação de triggers para recalcular registros automáticamente;
-5) Estabelecer interface Python - PostgreSQL
-6) Análise de dados com Python
+4) Criação de funções no banco de dados
+5) Criação de triggers para recalcular registros automáticamente;
+6) Estabelecer interface Python - PostgreSQL
+7) Análise de dados com Python
 
 
 # Tecnologias utilizadas
@@ -81,8 +82,56 @@ select * from turista where sexo = 'F'
 
 ## Criação de usuarios e privilégios no banco de dados
 
-## Simulação agendamento de viagens (TRANSACTIONS)
+O primeiro passo foi mapear 3 papéis que fossem coerentes existir na estrutura de dados. A partir disso, foram identificados 3 personas: Consumidor, Operador e Gerente.
 
+<b>Consumidor:</b> Se refere ao cliente que poderá realizar seu cadastro na plataforma e eventualmente realizar uma atualização de dados.
+<b>Operador:</b> Se refere ao usuário que é responsável por lançar uma viagem para um consumidor, possibilitando atualizar os dados da viagem e também do turista.
+<b>Gerente:</b> Usuário com acesso total para todas as tabelas. 
+
+ <b>Iniciamos criando os grupos, para que novos usuários herdem os privilégios:</b>
+- CREATE GROUP consumidor;
+- CREATE GROUP operador;
+- CREATE GROUP gerente;
+
+<b> Em seguida vinculamos os privilégios aos grupos:</b>
+- GRANT SELECT, INSERT ON turista TO consumidor WITH GRANT OPTION;
+- GRANT SELECT, INSERT, UPDATE, DELETE ON turista, viagem TO operador
+WITH GRANT OPTION;
+- GRANT SELECT, INSERT, UPDATE, DELETE ON estado_brasileiro, pais, turista,
+viagem TO gerente WITH GRANT OPTION;
+
+<b>Para finalizar criamos os usuários e alocamos nos seus respectivos grupos:</b>
+- CREATE USER consumidor1 ENCRYPTED PASSWORD 'con123' CREATEDB IN
+GROUP consumidor;
+- CREATE USER operador1 ENCRYPTED PASSWORD 'oper123' CREATEDB IN
+GROUP operador;
+- CREATE USER gerente1 ENCRYPTED PASSWORD 'ger123' CREATEDB IN
+GROUP gerente; 
+
+## Simulação agendamento de viagens (TRANSACTIONS)
+O trigger viagem_trigger foi criado no banco de dados com o objetivo de acionar a função verifica_covid sempre que a tabela de viagens receber um novo registro ou uma atualização.
+
+CREATE TRIGGER viagem_trigger
+ AFTER INSERT OR UPDATE
+ ON viagem FOR EACH ROW
+ WHEN (pg_trigger_depth() = 0)
+ EXECUTE PROCEDURE verifica_covid();
+ 
+Para contextualizar é necessário o entendimento da função verifica_covid. O objetivo dessa função é verificar a temperatura coletada do turista e atualizar o atributo libera_viagem da tabela viagem. Caso a temperatura seja superior a 37.5 graus, o turista é proibido de viajar, caso não, é liberado.
+
+CREATE OR REPLACE FUNCTION verifica_covid() RETURNS Trigger AS
+$BODY$
+BEGIN
+ if (new.temperatura > 37.5) then
+ update viagem set libera_viagem = false where id_viagem = new.id_viagem;
+ RETURN NULL;
+ ELSE
+ update viagem set libera_viagem = true where id_viagem = new.id_viagem;
+ RETURN NULL;
+ END IF;
+END;
+$BODY$
+LANGUAGE plpgsql; 
 
 # Análise de dados com Python
 
