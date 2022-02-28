@@ -160,7 +160,7 @@ set transaction isolation level read uncommitted;
 select * from turista where num_passaporte = '799698778782977';
 commit; </i>
 
-Vantagem sobre a decisão pelo grau de isolamento read uncommitted: Para gerar a informação para o Atendente 2 que o processo de agendamento já está em andamento pelo Atendente 1.
+Vantagem sobre a decisão pelo grau de isolamento read uncommitted: Gerar um alerta ao o Atendente 2 que o processo de agendamento já está em andamento por outros atendentes.
 
 # Análise de dados com Python
 
