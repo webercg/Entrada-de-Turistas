@@ -19,8 +19,9 @@ Dividiu-se o projeto final em 3 etapas para explorar cada funcionalidade e poten
 1) Criação de indexes para otimizar consultas ao banco de dados
 2) Criação de 3 usuários com diferentes ivilégios ao banco de dados
 3) Simulação no banco de dados para agendamento de viagens  (TRANSACTIONS)
-4) Estabelecer interface Python - PostgreSQL
-5) Análise de dados com Python
+4) Criação de triggers para recalcular registros automáticamente;
+5) Estabelecer interface Python - PostgreSQL
+6) Análise de dados com Python
 
 # Projeto 3
 Em construção ....
