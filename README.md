@@ -3,7 +3,11 @@
 
 # Sobre o projeto
 
-Os objetivos específicos desse projeto são:
+Foram utilizados os dados fornecidos pelo ministério do turismo que indicam a chegada dos turistas no brasil entre os anos de 1998 a 2017. Apenas os dados referentes aos anos de 2010 à 2015 foram considerados.
+
+A fim de simular o funcionamento de um banco de dados para gerenciamento de entrada de turistas no país, um novo banco de dados foi proposto para armazenar as informações do dataset e dados ficticios foram gerados para atender todos os requisitos do banco proposto.
+
+Dividiu-se o projeto final em 3 etapas para explorar cada funcionalidade e potenciais do banco de dados e análise de dados com R e Python. Os seguintes objetivos foram traçados para cada subprojeto:
 
 # Projeto 1
 1)  Criar novas tabelas, novos relacionamentos e registros fictícios de forma à simular o funcionamento de um banco para armazenagem de dados referente à chegadas de turistas internacionais ao Brasil.
